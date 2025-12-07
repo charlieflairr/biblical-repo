@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#8B5E3C"/>
+  
+  <!-- Inner cream circle -->
+  <circle cx="256" cy="256" r="220" fill="#FDF6E3"/>
+  
+  <!-- Bible/Book shape -->
+  <rect x="140" y="100" width="232" height="312" rx="12" fill="#D4A574"/>
+  <rect x="152" y="112" width="208" height="288" rx="8" fill="#FDF6E3"/>
+  
+  <!-- Cross on the book -->
+  <rect x="244" y="150" width="24" height="200" rx="4" fill="#8B5E3C"/>
+  <rect x="194" y="200" width="124" height="24" rx="4" fill="#8B5E3C"/>
+  
+  <!-- Book spine detail -->
+  <rect x="140" y="100" width="16" height="312" rx="4" fill="#C17F59"/>
+  
+  <!-- Small decorative elements -->
+  <circle cx="256" cy="380" r="8" fill="#8B5E3C"/>
+</svg>
+

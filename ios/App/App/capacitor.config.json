@@ -1,0 +1,14 @@
+{
+	"appId": "com.scripturecards.app",
+	"appName": "Scripture Cards",
+	"webDir": "www",
+	"ios": {
+		"contentInset": "automatic",
+		"allowsLinkPreview": false,
+		"backgroundColor": "#FDF6E3"
+	},
+	"server": {
+		"iosScheme": "capacitor"
+	},
+	"packageClassList": []
+}

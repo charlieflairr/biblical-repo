@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Scripture Cards | Learn Bible Verses</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Learn Bible verses with interactive flashcards - Duolingo style!">
+    <meta name="theme-color" content="#8B5E3C">
+    <meta name="background-color" content="#FDF6E3">
+    
+    <!-- iOS Specific Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Scripture">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- iOS Touch Icons -->
+    <link rel="apple-touch-icon" href="icons/icon-180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
+    
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image" href="icons/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)">
+    <link rel="apple-touch-startup-image" href="icons/splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- iOS Safe Area Styles -->
+    <style>
+        /* Handle iOS safe areas (notch, home indicator) */
+        body {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+        
+        /* Prevent text selection on iOS */
+        * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        /* Allow text selection in input fields */
+        input, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        
+        /* Smooth scrolling on iOS */
+        .app-container {
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Prevent pull-to-refresh in standalone mode */
+        html {
+            overscroll-behavior-y: contain;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="book-selector">
+                    <select id="book-select">
+                        <option value="genesis">Genesis</option>
+                        <option value="psalms">Psalms</option>
+                        <option value="proverbs">Proverbs</option>
+                        <option value="isaiah">Isaiah</option>
+                        <option value="matthew">Matthew</option>
+                        <option value="john" selected>John</option>
+                        <option value="romans">Romans</option>
+                        <option value="corinthians">1 Corinthians</option>
+                        <option value="philippians">Philippians</option>
+                        <option value="revelation">Revelation</option>
+                    </select>
+                    <span class="select-arrow">▼</span>
+                </div>
+            </div>
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <rect x="8" y="4" width="24" height="32" rx="2" fill="#D4A574"/>
+                        <rect x="10" y="6" width="20" height="28" rx="1" fill="#FDF6E3"/>
+                        <path d="M20 12V28M14 20H26" stroke="#8B5E3C" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <span class="logo-text">Scripture Cards</span>
+            </div>
+            <div class="streak-badge">
+                <svg viewBox="0 0 24 24" fill="none" class="streak-icon">
+                    <path d="M12 2L14.4 8.8L21.6 9.6L16.2 14.4L17.8 21.6L12 18L6.2 21.6L7.8 14.4L2.4 9.6L9.6 8.8L12 2Z" fill="#D4A574"/>
+                </svg>
+                <span id="streak-count">0</span>
+            </div>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-info">
+                <span class="card-counter" id="card-counter">1 of 10</span>
+                <span class="progress-text" id="progress-text">0/10 Mastered</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Difficulty Tabs -->
+        <nav class="difficulty-tabs">
+            <button class="tab active" data-level="beginner">
+                <span class="tab-icon">🕊️</span>
+                <span class="tab-label">Beginner</span>
+            </button>
+            <button class="tab" data-level="intermediate">
+                <span class="tab-icon">📜</span>
+                <span class="tab-label">Intermediate</span>
+            </button>
+            <button class="tab" data-level="hard">
+                <span class="tab-icon">✝️</span>
+                <span class="tab-label">Hard</span>
+            </button>
+        </nav>
+
+        <!-- Single Card Container -->
+        <main class="single-card-container">
+            <button class="nav-btn prev-btn" id="prev-btn" disabled>
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            
+            <div class="card-wrapper" id="card-wrapper">
+                <!-- Card will be dynamically generated -->
+            </div>
+            
+            <button class="nav-btn next-btn" id="next-btn">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </main>
+
+        <!-- Voice Modal for Hard Mode -->
+        <div class="voice-modal" id="voice-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>🎤 Speak the Verse</h3>
+                    <button class="modal-close" id="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="hint-text" id="verse-hint"></p>
+                    <div class="attempt-indicator" id="attempt-indicator">
+                        <span class="attempt-dot"></span>
+                        <span class="attempt-dot"></span>
+                        <span class="attempt-dot"></span>
+                    </div>
+                    <div class="progressive-hint" id="progressive-hint"></div>
+                    <div class="voice-visualizer" id="voice-visualizer">
+                        <div class="voice-ring"></div>
+                        <div class="voice-ring"></div>
+                        <div class="voice-ring"></div>
+                        <svg viewBox="0 0 24 24" class="mic-icon">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <p class="listening-text" id="listening-text">Tap to start speaking</p>
+                    <button class="speak-btn" id="speak-btn">
+                        <span>Start Speaking</span>
+                    </button>
+                    <div class="speech-result" id="speech-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Modal -->
+        <div class="results-modal" id="results-modal">
+            <div class="results-content">
+                <div class="results-icon">📖</div>
+                <h2>Session Complete!</h2>
+                <div class="score-circle" id="score-circle">
+                    <span class="score-number" id="score-number">0</span>
+                    <span class="score-total">/10</span>
+                </div>
+                <p class="score-message" id="score-message"></p>
+                <div class="encouragement" id="encouragement"></div>
+                <button class="restart-btn" id="restart-btn">Try Again</button>
+            </div>
+        </div>
+
+        <!-- About Me Modal -->
+        <div class="about-modal" id="about-modal">
+            <div class="about-modal-content">
+                <div class="about-modal-header">
+                    <h3>📖 About Us</h3>
+                    <button class="about-modal-close" id="about-modal-close">&times;</button>
+                </div>
+                <div class="about-modal-body">
+                    <img src="mascot.jpg" alt="Scripture study buddies" class="about-photo" id="about-photo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22250%22%3E%3Crect fill=%22%23D4A574%22 width=%22350%22 height=%22250%22/%3E%3Ctext x=%22175%22 y=%22130%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2248%22%3E📖✝️🙏%3C/text%3E%3C/svg%3E'">
+                    <p class="about-text">Two friends on a journey to memorize Scripture together. Join us in hiding God's Word in our hearts!</p>
+                    <div class="about-verse">
+                        "Thy word have I hid in mine heart, that I might not sin against thee." — Psalm 119:11
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Celebration Overlay -->
+        <div class="celebration" id="celebration">
+            <div class="celebration-content">
+                <div class="celebration-icon">🙏</div>
+                <h2>Well Done!</h2>
+                <p>You've memorized this verse!</p>
+                <div class="xp-gained">+10 XP</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer elements OUTSIDE app-container for reliable fixed positioning -->
+    <button class="about-me-btn" id="about-me-btn">
+        <span class="btn-icon">👋</span>
+        <span>About Us</span>
+    </button>
+
+    <div class="mascot" id="mascot">
+        <div class="mascot-image" id="mascot-image">
+            <img src="mascot.jpg" alt="Scripture buddies" id="mascot-img" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'mascot-fallback\'>📖</div>'">
+        </div>
+        <div class="mascot-speech" id="mascot-speech">
+            <p>Select a book and start learning! 📖</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('/service-worker.js');
+                    console.log('ServiceWorker registered:', registration.scope);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New content available, show update prompt
+                                if (confirm('New version available! Reload to update?')) {
+                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                } catch (error) {
+                    console.error('ServiceWorker registration failed:', error);
+                }
+            });
+        }
+        
+        // iOS Install Prompt
+        let deferredPrompt;
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        
+        if (isIOS && !isStandalone) {
+            // Show iOS install instructions after a delay
+            setTimeout(() => {
+                const mascotSpeech = document.getElementById('mascot-speech');
+                if (mascotSpeech && !localStorage.getItem('iosInstallDismissed')) {
+                    mascotSpeech.innerHTML = `
+                        <p style="font-size: 0.8rem;">
+                            📲 Install this app:<br>
+                            Tap <strong>Share</strong> → <strong>Add to Home Screen</strong>
+                        </p>
+                    `;
+                }
+            }, 3000);
+        }
+        
+        // Handle Android install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button in mascot speech
+            const mascotSpeech = document.getElementById('mascot-speech');
+            if (mascotSpeech) {
+                mascotSpeech.innerHTML = `
+                    <p>Install Scripture Cards for offline use! 📲</p>
+                    <button onclick="installApp()" style="
+                        background: var(--clay);
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 20px;
+                        margin-top: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">Install App</button>
+                `;
+            }
+        });
+        
+        async function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('Install prompt outcome:', outcome);
+                deferredPrompt = null;
+            }
+        }
+        
+        // Handle app installed
+        window.addEventListener('appinstalled', () => {
+            console.log('Scripture Cards installed successfully!');
+            deferredPrompt = null;
+            const mascotSpeech = document.getElementById('mascot-speech');
+            if (mascotSpeech) {
+                mascotSpeech.innerHTML = '<p>App installed! God bless your studies! 🙏</p>';
+            }
+        });
+    </script>
+</body>
+</html>
